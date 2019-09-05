@@ -9,6 +9,16 @@ namespace ME.Taptic {
             #endif
             
         }
+        
+        bool ITapticBridge.IsSupported() {
+
+            #if UNITY_EDITOR
+            return true;
+            #else
+            return false;
+            #endif
+
+        }
 
     }
 

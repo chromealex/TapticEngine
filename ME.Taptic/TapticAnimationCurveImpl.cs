@@ -45,7 +45,7 @@ namespace ME.Taptic {
             return this.isPlaying;
 
         }
-
+        
         void ITapticModuleInternal.Update() {
 
             if (this.isPlaying == false) return;

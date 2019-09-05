@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ME.Taptic {
 
@@ -37,6 +35,7 @@ namespace ME.Taptic {
         void Unmute();
 
         bool IsPlaying();
+        bool IsSupported();
 
         void Update();
 
@@ -48,12 +47,13 @@ namespace ME.Taptic {
         void PlayCurve(AnimationCurve curve, bool randomize);
         void SetMaxChannels(int value);
         bool IsPlaying();
-        
+
     }
 
     public interface ITapticBridge {
 
         void Play(TapticType type, float duration, float strength);
+        bool IsSupported();
 
     }
 
@@ -110,6 +110,14 @@ namespace ME.Taptic {
             
             this.isMuted = false;
             
+        }
+
+        bool ITapticEngine.IsSupported() {
+
+            if (this.bridge != null) return this.bridge.IsSupported();
+            
+            return false;
+
         }
 
         bool ITapticEngine.IsPlaying() {

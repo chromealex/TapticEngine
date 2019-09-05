@@ -1,4 +1,4 @@
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
 using UnityEngine;
 
 namespace ME.Taptic {
@@ -27,6 +27,18 @@ namespace ME.Taptic {
                 this.AndroidVibrate((long)(duration * 1000f), (byte)Mathf.Clamp(0, 255, strength));
 
             }
+
+        }
+
+        bool ITapticBridge.IsSupported() {
+
+            if (this.androidVibrator == null || this.androidVibrator.Call<bool>("hasVibrator") == false) {
+
+                return false;
+
+            }
+
+            return true;
 
         }
 

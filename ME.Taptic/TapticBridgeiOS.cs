@@ -1,4 +1,4 @@
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
 using UnityEngine;
 using System.Runtime.InteropServices;
 
@@ -34,6 +34,18 @@ namespace ME.Taptic {
             
             return SystemInfo.deviceModel == "iPhone8,1" || SystemInfo.deviceModel == "iPhone8,2";
             
+        }
+
+        bool ITapticBridge.IsSupported() {
+
+            if ((UnityEngine.iOS.Device.generation.ToString().ToLower()).Contains("ipad") == true) {
+
+                return false;
+
+            }
+
+            return true;
+
         }
 
     }
