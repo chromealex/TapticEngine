@@ -93,6 +93,8 @@ namespace ME.Taptic {
 
         ITapticEngine ITapticEngine.SetActiveModule(ITapticModule module) {
 
+            if (this.IsSupported_INTERNAL() == false) return this;
+            
             this.activeModule = module as ITapticModuleInternal;
             if (this.activeModule != null) this.activeModule.Initialize(this);
             
@@ -114,8 +116,14 @@ namespace ME.Taptic {
 
         bool ITapticEngine.IsSupported() {
 
-            if (this.bridge != null) return this.bridge.IsSupported();
+            return this.IsSupported_INTERNAL();
+
+        }
+
+        private bool IsSupported_INTERNAL() {
             
+            if (this.bridge != null) return this.bridge.IsSupported();
+
             return false;
 
         }

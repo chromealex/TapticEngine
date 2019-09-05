@@ -1,4 +1,4 @@
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if !_ //&& UNITY_ANDROID && !UNITY_EDITOR
 using UnityEngine;
 
 namespace ME.Taptic {
@@ -24,7 +24,7 @@ namespace ME.Taptic {
                 
             } else {
 
-                this.AndroidVibrate((long)(duration * 1000f), (byte)Mathf.Clamp(0, 255, strength));
+                this.AndroidVibrate((long)(duration * 1000f), (byte)Mathf.Clamp(1, 255, strength));
 
             }
 
@@ -124,13 +124,8 @@ namespace ME.Taptic {
                 
                 this.VibrationEffectClassInitialization();
                 if (this.vibrationEffectClass != null) {
-                    
-                    this.vibrationEffect = this.vibrationEffectClass.CallStatic<AndroidJavaObject>("createWaveform", new object[] { pattern, amplitudes, repeat });
-                    if (this.vibrationEffect != null && this.androidVibrator != null) {
-                        
-                        this.androidVibrator.Call("vibrate", this.vibrationEffect);
-                        
-                    }
+
+                    this.CreateVibrationEffect("createWaveform", new object[] { pattern, amplitudes, repeat });
                     
                 }
                 
@@ -148,18 +143,13 @@ namespace ME.Taptic {
                 
                 this.VibrationEffectClassInitialization();
                 if (this.vibrationEffectClass != null) {
-                    
-                    this.vibrationEffect = this.vibrationEffectClass.CallStatic<AndroidJavaObject>("createOneShot", new[] { milliseconds, amplitude });
-                    if (this.vibrationEffect != null && this.androidVibrator != null) {
-                        
-                        this.androidVibrator.Call("vibrate", this.vibrationEffect);
-                        
-                    } else {
+
+                    if (this.CreateVibrationEffect("createOneShot", new object[] { milliseconds, amplitude }) == false) {
                         
                         this.AndroidVibrate(milliseconds);
-                        
+
                     }
-                    
+
                 } else {
                     
                     this.AndroidVibrate(milliseconds);
@@ -170,6 +160,24 @@ namespace ME.Taptic {
             
         }
 
+        private bool CreateVibrationEffect(string function, params object[] args) {
+            
+            if (this.androidVibrator !=null) {
+                
+                var vibrationEffect = this.vibrationEffectClass.CallStatic<AndroidJavaObject>(function, args);
+                if (vibrationEffect != null) {
+                    
+                    this.androidVibrator.Call("vibrate", vibrationEffect);
+                    return true;
+
+                }
+                
+            }
+
+            return false;
+
+        }
+        
         private void VibrationEffectClassInitialization() {
             
             if (this.vibrationEffectClass == null) {
